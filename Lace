@@ -1,0 +1,80 @@
+//experimenting with basic shapes: triangles and circles. 
+//September, 2013
+//jiazhou
+
+Triangle[] myTriangles;
+color[] colors = new color[7];
+
+void setup() {
+  size(600, 600);
+  colors[0] = #128085;
+  colors[1] = #385052;
+  colors[2] = #1E4F6A;
+  colors[3] = #4DAAAB;
+  colors[4] = #00ADA7;
+  colors[5] = #2A423C;
+  colors[6] = #2A423C;
+  background(255);
+  frameRate(25);
+  smooth();
+
+  myTriangles = new Triangle[2];
+  for (int i=0;i<myTriangles.length;i++) {
+    myTriangles[i]=new Triangle (random (50, 280), random(10, 25), random (0, 360), colors[int(random(0, 7))], random(1, 2));
+  }
+  println(myTriangles[0].angle);
+}
+
+void draw() {
+  for (int i=0;i<myTriangles.length;i++) {
+    myTriangles[i].display();
+    myTriangles[i].move();
+  }
+}
+
+class Triangle {
+  float distance;//distance from the center of the canvas
+  float r;//radius of the circle circumscribed the triangle
+  float angle;//rotating angle
+  color c;
+  float increment;
+  int count=0;
+
+  Triangle (float distance_, float r_, float angle_, color c_, float increment_) {
+    distance=distance_;
+    r=r_;
+    angle=angle_;
+    c=c_;
+    increment=increment_;
+  }
+
+  void display() {
+    float xPosition=width/2+distance*cos(radians(angle));
+    float yPosition=height/2-distance*sin(radians(angle));
+    pushMatrix();
+    translate(xPosition, yPosition);
+    rotate(angle);
+    noFill();
+    stroke(c, 100);//alpha=100
+    strokeWeight(0.5);
+    beginShape();//draw triangle
+    vertex(0, -r);
+    vertex(r*sin(PI/3), r/2);
+    vertex(-r*sin(PI/3), r/2);
+    endShape(CLOSE);
+    popMatrix();
+  }
+
+  void move() {
+    angle+=increment;
+    count++;
+    if (count*increment>=360) {
+      count=0;//restart counting
+      distance=random (50, 280);
+      r=random(10, 25);
+      angle= random (0, 360);
+      c=colors[int(random(0, 7))];
+      increment=random(1, 2);
+    }
+  }
+}
